@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenAI y el Problema del Milenio de Navier–Stokes</title>
+<meta name="description" content="Explicación del anuncio de OpenAI sobre una posible resolución del problema de existencia y suavidad de Navier–Stokes y la controversia científica que lo rodea.">
+<style>
+:root{
+  --bg:#07111f; --panel:#0d1b2d; --panel2:#10243b; --text:#edf5ff;
+  --muted:#a9bdd2; --accent:#63d7ff; --accent2:#9b8cff; --line:#203852;
+  --warning:#ffd166; --good:#66e3a4;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:radial-gradient(circle at 20% 0%,#12355a 0,#07111f 35%,#050b14 100%);color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif;line-height:1.65}
+a{color:var(--accent)}
+.container{width:min(1120px,92%);margin:auto}
+header{padding:70px 0 45px;border-bottom:1px solid var(--line)}
+.badge{display:inline-block;border:1px solid #31577a;border-radius:999px;padding:7px 13px;color:var(--accent);font-size:.85rem;letter-spacing:.05em;text-transform:uppercase;background:#0a1929}
+h1{font-size:clamp(2.5rem,6vw,5.4rem);line-height:1.02;margin:20px 0 18px;max-width:1000px;letter-spacing:-.04em}
+h2{font-size:clamp(1.8rem,3vw,2.8rem);line-height:1.15;margin-top:0}
+h3{color:#fff;margin-bottom:8px}
+.lead{font-size:1.22rem;color:#c6d6e7;max-width:850px}
+.meta{color:var(--muted);font-size:.92rem;margin-top:20px}
+nav{position:sticky;top:0;z-index:5;background:rgba(5,11,20,.82);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+nav .container{display:flex;gap:18px;overflow:auto;padding:12px 0}
+nav a{text-decoration:none;white-space:nowrap;font-size:.9rem}
+section{padding:72px 0}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.card{background:linear-gradient(145deg,rgba(16,36,59,.95),rgba(9,24,40,.95));border:1px solid var(--line);border-radius:22px;padding:25px;box-shadow:0 18px 55px rgba(0,0,0,.2)}
+.hero-art,.art{border:1px solid var(--line);border-radius:26px;background:#06101c;overflow:hidden}
+.hero-art{margin-top:34px}
+svg{display:block;width:100%;height:auto}
+.callout{border-left:4px solid var(--accent);padding:18px 22px;background:rgba(99,215,255,.07);border-radius:0 14px 14px 0;margin:25px 0}
+.warning{border-left-color:var(--warning);background:rgba(255,209,102,.07)}
+.good{border-left-color:var(--good);background:rgba(102,227,164,.07)}
+.big-number{font-size:3rem;font-weight:800;line-height:1;color:var(--accent)}
+.kicker{color:var(--accent);text-transform:uppercase;font-size:.8rem;font-weight:800;letter-spacing:.12em}
+table{width:100%;border-collapse:collapse;background:rgba(7,17,31,.6);border-radius:16px;overflow:hidden}
+th,td{text-align:left;padding:15px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:#fff;background:#10243b}
+td{color:#c7d5e4}
+.timeline{border-left:2px solid #31577a;margin-left:10px;padding-left:25px}
+.timeline .item{position:relative;margin:0 0 28px}
+.timeline .item:before{content:"";position:absolute;left:-34px;top:7px;width:14px;height:14px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 5px #07111f}
+footer{border-top:1px solid var(--line);padding:40px 0;color:var(--muted)}
+.source{font-size:.9rem;color:var(--muted)}
+@media(max-width:760px){.grid,.grid3{grid-template-columns:1fr}section{padding:50px 0}header{padding-top:45px}h1{font-size:2.7rem}}
+</style>
+</head>
+<body>
+
+<header>
+<div class="container">
+<span class="badge">Ciencia · Matemáticas · Inteligencia artificial</span>
+<h1>OpenAI dice haber resuelto un “Problema del Milenio”.</h1>
+<p class="lead">El problema es <strong>Navier–Stokes: existencia y suavidad</strong>, una de las preguntas más difíciles de las matemáticas modernas. El anuncio es potencialmente histórico, pero la prueba todavía debe superar el escrutinio independiente de la comunidad matemática.</p>
+<p class="meta">Actualizado: 11 de septiembre de 2026 · Basado en el anuncio de OpenAI del 8 de septiembre y en cobertura científica reciente.</p>
+
+<div class="hero-art">
+<svg viewBox="0 0 1200 520" role="img" aria-label="Ilustración de un vórtice de fluido">
+<defs>
+<radialGradient id="bg"><stop stop-color="#163c62"/><stop offset="1" stop-color="#06101c"/></radialGradient>
+<linearGradient id="flow"><stop stop-color="#63d7ff"/><stop offset=".5" stop-color="#9b8cff"/><stop offset="1" stop-color="#66e3a4"/></linearGradient>
+<filter id="glow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<rect width="1200" height="520" fill="url(#bg)"/>
+<g fill="none" stroke="url(#flow)" stroke-width="5" opacity=".8" filter="url(#glow)">
+<path d="M80 100 C350 10 700 50 1060 150 C1150 180 1080 240 930 220 C700 190 600 100 420 150 C250 200 260 330 500 350 C760 375 900 270 1080 330"/>
+<path d="M60 200 C300 120 530 170 690 240 C820 298 930 285 1100 230"/>
+<path d="M110 310 C330 270 420 390 650 410 C850 428 980 360 1130 390"/>
+<path d="M250 60 C370 160 350 280 490 300 C620 320 700 210 840 170 C960 135 1030 180 1120 120"/>
+<path d="M180 440 C370 350 530 450 690 455 C850 460 950 410 1080 450"/>
+</g>
+<g fill="#fff" opacity=".8">
+<circle cx="600" cy="260" r="6"/><circle cx="650" cy="270" r="4"/><circle cx="550" cy="250" r="4"/>
+</g>
+<text x="55" y="470" fill="#a9bdd2" font-size="22">Flujo idealizado: líneas que convergen, giran y se estiran alrededor de un vórtice.</text>
+</svg>
+</div>
+</div>
+</header>
+
+<nav><div class="container">
+<a href="#que">¿Qué pasó?</a><a href="#problema">El problema</a><a href="#prueba">La supuesta solución</a><a href="#revuelo">¿Por qué el revuelo?</a><a href="#cronologia">Cronología</a><a href="#fuentes">Fuentes</a>
+</div></nav>
+
+<main>
+<section id="que"><div class="container">
+<div class="kicker">La noticia en pocas palabras</div>
+<h2>¿Qué anunció OpenAI?</h2>
+<div class="grid">
+<div class="card">
+<div class="big-number">88 h</div>
+<h3>El tiempo reportado</h3>
+<p>OpenAI afirma que su sistema interno, coordinando grandes grupos de agentes de IA, llegó a una resolución del problema de Navier–Stokes aproximadamente 88 horas después de comenzar el esfuerzo específico.</p>
+</div>
+<div class="card">
+<div class="big-number">10.000</div>
+<h3>Agentes de IA</h3>
+<p>Según OpenAI, el grupo que produjo la resolución involucró del orden de diez mil agentes concurrentes. La empresa dice que después utilizó GPT‑6 Astra durante unas 17 horas para formalizar y verificar el resultado en Lean.</p>
+</div>
+</div>
+<div class="callout warning"><strong>Importante:</strong> “OpenAI dice que lo resolvió” no significa todavía “la comunidad matemática ya lo ha aceptado”. La afirmación necesita revisión independiente y un examen minucioso de la demostración.</div>
+</div></section>
+
+<section id="problema"><div class="container">
+<div class="kicker">Matemáticas</div>
+<h2>¿Qué es Navier–Stokes?</h2>
+<p>Las ecuaciones de Navier–Stokes modelan el movimiento de fluidos, como el agua y el aire. Incorporan ideas como aceleración, presión, transporte de cantidad de movimiento y viscosidad.</p>
+
+<div class="art">
+<svg viewBox="0 0 1200 420" role="img" aria-label="Esquema de las ecuaciones de Navier Stokes">
+<rect width="1200" height="420" fill="#06101c"/>
+<text x="70" y="95" fill="#63d7ff" font-size="28">Ecuación de movimiento del fluido</text>
+<text x="70" y="185" fill="#fff" font-size="58" font-family="Georgia,serif">∂u/∂t + (u · ∇)u = −∇p + νΔu + f</text>
+<text x="70" y="260" fill="#a9bdd2" font-size="23">u = velocidad · p = presión · ν = viscosidad · f = fuerza externa</text>
+<line x1="70" y1="300" x2="1130" y2="300" stroke="#203852"/>
+<text x="70" y="350" fill="#9b8cff" font-size="24">La gran pregunta: si el inicio es suave y razonable, ¿la solución permanece suave para siempre?</text>
+</svg>
+</div>
+
+<div class="grid3" style="margin-top:22px">
+<div class="card"><h3>🌊 Fluido</h3><p>El modelo se utiliza para describir cómo se desplaza un fluido y cómo interactúan sus distintas regiones.</p></div>
+<div class="card"><h3>🌀 Vórtices</h3><p>La formación y concentración de remolinos es central en los escenarios de singularidad estudiados por la prueba.</p></div>
+<div class="card"><h3>∞ Singularidad</h3><p>Una singularidad sería un punto o instante en que una magnitud matemática, como la velocidad, deja de permanecer finita.</p></div>
+</div>
+</div></section>
+
+<section id="prueba"><div class="container">
+<div class="kicker">¿Qué afirma la demostración?</div>
+<h2>El corazón de la propuesta de OpenAI</h2>
+<div class="grid">
+<div>
+<p>OpenAI sostiene que encontró una solución en la que un fluido inicialmente suave puede desarrollar una <strong>singularidad en tiempo finito</strong>. En términos intuitivos: el flujo se organiza en un vórtice que se vuelve cada vez más concentrado y rápido.</p>
+<p>La afirmación es especialmente interesante porque la energía total puede permanecer finita mientras la velocidad local crece sin límite en el escenario matemático.</p>
+</div>
+<div class="card">
+<h3>La idea visual</h3>
+<svg viewBox="0 0 520 300" role="img" aria-label="Vórtice que se concentra">
+<rect width="520" height="300" rx="18" fill="#06101c"/>
+<g fill="none" stroke="#63d7ff" stroke-width="3">
+<ellipse cx="260" cy="150" rx="210" ry="105"/>
+<ellipse cx="260" cy="150" rx="160" ry="80"/>
+<ellipse cx="260" cy="150" rx="110" ry="55"/>
+<ellipse cx="260" cy="150" rx="60" ry="30"/>
+</g>
+<path d="M70 80 C160 110 180 210 260 150 C340 90 360 190 450 220" fill="none" stroke="#9b8cff" stroke-width="6"/>
+<circle cx="260" cy="150" r="10" fill="#66e3a4"/>
+<text x="22" y="278" fill="#a9bdd2" font-size="17">Concentración idealizada hacia una región singular.</text>
+</svg>
+</div>
+</div>
+<div class="callout good"><strong>Formalización:</strong> OpenAI también publicó una formalización en Lean. Eso es valioso porque permite comprobar mecánicamente muchos pasos formales de la prueba. Aun así, la formalización no elimina la necesidad de que matemáticos externos examinen si el argumento realmente corresponde al problema oficial y si no hay errores conceptuales.</div>
+</div></section>
+
+<section id="revuelo"><div class="container">
+<div class="kicker">La controversia</div>
+<h2>¿Por qué hay tanto revuelo entre científicos?</h2>
+<div class="grid">
+<div class="card"><h3>1. Es uno de los “Problemas del Milenio”</h3><p>El Clay Mathematics Institute seleccionó siete problemas en 2000 y ofreció un premio de un millón de dólares por una solución válida de cada uno. Antes de este anuncio, solo la Conjetura de Poincaré había sido resuelta.</p></div>
+<div class="card"><h3>2. La revisión aún importa</h3><p>Una prueba de esta magnitud no se acepta simplemente porque una empresa la publique. Matemáticos independientes deben verificar cada paso, interpretar el resultado y confirmar que satisface exactamente la formulación oficial.</p></div>
+<div class="card"><h3>3. Hay una disputa sobre prioridad</h3><p>OpenAI dice que comenzó a centrarse en Navier–Stokes después de conocer rumores sobre avances de investigadores vinculados a Anthropic. Tristan Buckmaster cuestionó públicamente la situación y expresó preocupación sobre la posible influencia de trabajo desarrollado con herramientas de OpenAI. OpenAI niega haber visto ese trabajo antes de la publicación y afirma que una investigación interna no encontró influencia identificable.</p></div>
+<div class="card"><h3>4. ¿Puede una IA “entender” matemáticas?</h3><p>El episodio abre una discusión más profunda: si una máquina encuentra una demostración correcta pero los humanos necesitan tiempo para comprenderla, ¿qué significa eso para la práctica matemática? La comunidad debate el equilibrio entre descubrimiento, comprensión y verificación.</p></div>
+</div>
+
+<div class="callout warning"><strong>La palabra clave es “afirma”.</strong> En una noticia sobre una prueba matemática extraordinaria conviene separar tres cosas: <strong>el anuncio de OpenAI</strong>, <strong>la verificación formal/computacional</strong> y <strong>la aceptación independiente por matemáticos expertos</strong>. No son exactamente lo mismo.</div>
+</div></section>
+
+<section id="cronologia"><div class="container">
+<div class="kicker">Cronología</div>
+<h2>¿Cómo ocurrió?</h2>
+<div class="timeline">
+<div class="item"><h3>2000 — Nacen los Problemas del Milenio</h3><p>El Clay Mathematics Institute presenta siete grandes desafíos y establece un premio de US$1 millón para cada solución correcta.</p></div>
+<div class="item"><h3>Agosto–septiembre de 2026 — Nuevos modelos</h3><p>OpenAI entrena y evalúa un sistema interno con capacidades matemáticas mejoradas.</p></div>
+<div class="item"><h3>1 de septiembre — Cambio de foco</h3><p>Según OpenAI, tras escuchar rumores de avances relacionados con problemas del Milenio, organiza un esfuerzo para evaluar varios de ellos.</p></div>
+<div class="item"><h3>5 de septiembre — Resultado</h3><p>OpenAI afirma que sus agentes llegaron a la resolución de Navier–Stokes tras unas 88 horas.</p></div>
+<div class="item"><h3>6 de septiembre — Formalización</h3><p>La empresa indica que la formalización y verificación en Lean tomó unas 17 horas adicionales.</p></div>
+<div class="item"><h3>8 de septiembre — Anuncio público</h3><p>OpenAI publica su explicación y la prueba propuesta. El anuncio genera entusiasmo y, al mismo tiempo, preguntas sobre prioridad y revisión independiente.</p></div>
+<div class="item"><h3>10–11 de septiembre — Debate</h3><p>La discusión se centra en la validez matemática, la autoría, el posible uso de información previa y qué estándares deberían aplicarse a descubrimientos realizados con IA.</p></div>
+</div>
+</div></section>
+
+<section><div class="container">
+<div class="kicker">¿Qué significa realmente?</div>
+<h2>Una revolución potencial, pero con una condición</h2>
+<div class="card">
+<p>Si la prueba de OpenAI supera una revisión independiente rigurosa, estaríamos ante un acontecimiento extraordinario: una herramienta de IA habría producido una solución a uno de los problemas matemáticos más famosos de la historia.</p>
+<p>Pero el valor científico no está únicamente en “obtener la respuesta”. También está en comprobarla, entender por qué funciona, determinar qué ideas son nuevas y establecer claramente la procedencia de las ideas utilizadas.</p>
+<p><strong>Por eso el debate no es solo “¿la IA resolvió las matemáticas?”.</strong> También es “¿cómo verificamos, atribuimos y comprendemos una demostración cuando una enorme cantidad de agentes artificiales participa en su descubrimiento?”</p>
+</div>
+</div></section>
+
+<section id="fuentes"><div class="container">
+<div class="kicker">Fuentes consultadas</div>
+<h2>Lecturas recomendadas</h2>
+<div class="card">
+<ul>
+<li><strong>OpenAI — “On the Navier–Stokes Millennium Prize Problem”</strong> (8 de septiembre de 2026): anuncio, explicación del resultado, proceso de agentes y formalización en Lean.</li>
+<li><strong>Nature — “OpenAI claims huge maths breakthrough on a famed ‘Millennium Problem’”</strong> (8 de septiembre de 2026): contexto científico y reacción de matemáticos.</li>
+<li><strong>The Guardian — “OpenAI claims to have solved maths problem that stumped humans for decades”</strong> (8 de septiembre de 2026): detalles sobre la escala del esfuerzo y la controversia.</li>
+<li><strong>El País — cobertura de la controversia</strong> (9 de septiembre de 2026): disputa sobre prioridad y preguntas éticas alrededor de la investigación.</li>
+<li><strong>DW — “OpenAI dice resolver un enigma matemático del Milenio”</strong> (9 de septiembre de 2026): explicación divulgativa en español.</li>
+</ul>
+<p class="source">Nota editorial: este HTML presenta la situación como una afirmación de OpenAI, no como una resolución ya aceptada oficialmente por la comunidad matemática.</p>
+</div>
+</div></section>
+</main>
+
+<footer><div class="container">
+<strong>OpenAI y Navier–Stokes · Especial divulgativo</strong>
+<p>Archivo autónomo: diseño, ilustraciones SVG y contenido están incluidos en este único HTML. No necesita imágenes externas, bibliotecas ni conexión a Internet para mostrar la página.</p>
+</div></footer>
+</body>
+</html>
